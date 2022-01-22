@@ -3,29 +3,32 @@ const request = require('request');    // Install and use the request library to
 
 const endpoint = "https://api.thecatapi.com/v1/breeds/search?q=";
 
-const breedName = process.argv[2];  // allows user to specify breed name using command-line arguments
-console.log(breedName)
-
 const fetchBreedDescription = function(breedName, callback) {
 
   request((endpoint + breedName), (error, response, body) => {
+    
     if (error) {
       callback(error);
       return;
     }
     
-    console.log(typeof body);
+    // console.log(typeof body);
     const data = JSON.parse(body)[0];
-    console.log(data);
-    console.log(typeof data); // should say that data is now an object not a string
+    //console.log(typeof data); // should say that data is now an object not a string
 
     // Write code to output an appropriate message if the requested breed is not found.
-    if (data === false) {
+    if (!data) {
       callback("Error: Requested breed was not found.");
     }
-  })
+
+    if (data) {
+      callback(null, data["description"]);
+    }
+
+  });
 };
 
+module.exports = { fetchBreedDescription };
 
 
 
